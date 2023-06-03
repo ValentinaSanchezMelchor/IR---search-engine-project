@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search Engine</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Movie Search Engine</h1>
+    <form id="search-form" method="POST" action="{{ url_for('search') }}">
+        <label for="query">Search for a movie:</label>
+        <input type="text" name="query" id="query" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+      $(document).ready(function() {
+        $('#search-form').submit(function(event) {
+          event.preventDefault();
+          $.post({
+            url: '/search',
+            data: $(this).serialize(),
+            dataType: 'json',  // add this line
+            success: function(data) {
+                console.log("testttt")
+              $('#results').empty();
+              if (data.length > 0) {
+                var table = $('<table></table>').addClass('table');
+                var header = $('<tr></tr>').append($('<th></th>').text('Title'))
+                                           .append($('<th></th>').text('Year'))
+                                           .append($('<th></th>').text('Director'));
+                table.append(header);
+                data.forEach(function(movie) {
+                  var row = $('<tr></tr>').append($('<td></td>').text(movie.Series_Title))
+                                          .append($('<td></td>').text(movie.Released_Year))
+                                          .append($('<td></td>').text(movie.Director));
+                  table.append(row);
+                });
+                $('#results').append('<p>No results found.</p>');
+                $('#results').append(table);
+              } else {
+                $('#results').append('<p>No results found.</p>');
+              }
+            }
+          });
+        });
+      });
+    </script>
+</body>
+</html>
+
+
+
+
